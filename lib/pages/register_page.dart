@@ -91,6 +91,7 @@ class __FormState extends State<_Form> {
             isPassword: true,
           ),
           BotonAzul(
+            heigthsize: 55,
             text: 'Crear cuenta',
             onPressed: authService.autenticando ? null : () async {
                //print( nameCtrl.text );
