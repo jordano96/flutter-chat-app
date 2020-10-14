@@ -1,6 +1,9 @@
 import 'package:chat/constant/constants.dart';
 import 'package:chat/models/usuario.dart';
+import 'package:chat/services/auth_service.dart';
+import 'package:chat/widgets/menu_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -59,18 +62,22 @@ class _UsuariosPageState extends State<UsuariosPage> {
   ];
   @override
   Widget build(BuildContext context) {
+    final authService=Provider.of<AuthService>(context);
+    final usuario=authService.usuario;
     return Scaffold(
+      drawer: MenuWidget(),
       appBar: AppBar(
+        iconTheme: new IconThemeData(color: Colors.blue[400]),
         title: Center(
-          child: Text('Mi nombre',style: TextStyle(color: Colors.black54),
+          child: Text(usuario.nombre+' '+usuario.apellido,style: TextStyle(color: Colors.black54),
           )),
         elevation: 1,
-        leading: IconButton(
+        /*leading: IconButton(
           icon: Icon(Icons.exit_to_app,color: Colors.black54,), 
           onPressed: (){
 
           }
-          ),
+          ),*/
           actions: <Widget>[
             Container(
               margin: EdgeInsets.only(right: 10),

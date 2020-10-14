@@ -1,6 +1,7 @@
 import 'package:chat/pages/chat_page.dart';
 import 'package:chat/pages/loading_page.dart';
 import 'package:chat/pages/login_page.dart';
+import 'package:chat/pages/register_page_prueba.dart';
 import 'package:chat/pages/maps_especifico.dart';
 import 'package:chat/pages/register_page.dart';
 import 'package:chat/pages/rutas.dart';
@@ -15,4 +16,5 @@ final Map<String, Widget Function(BuildContext)> appRoutes={
 'loading':(_)=>LoadingPage(),
 'mapsespecifico':(_)=>MapsEspecificoPage(),
 'rutas':(_)=>RutasPage(),
+'prueba':(_)=>RegisterPagePrueba()
 };

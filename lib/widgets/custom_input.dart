@@ -12,6 +12,7 @@ class CustomInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 55,
             padding: EdgeInsets.only(top: 5,left: 5,bottom: 5,right: 20),
             margin: EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
