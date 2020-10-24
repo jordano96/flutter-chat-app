@@ -1,5 +1,7 @@
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/socket_service.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 //import 'package:letsveganv1/providers/tema_bloc.dart';
 //import 'package:provider/provider.dart';
 class MenuWidget extends StatelessWidget {
@@ -7,6 +9,7 @@ class MenuWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //final temabloc=Provider.of<ThemeNotifier>(context,listen: false);
+    final socketService = Provider.of<SocketService>( context );
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
@@ -50,8 +53,8 @@ class MenuWidget extends StatelessWidget {
               leading: Icon(Icons.exit_to_app,color: Colors.blue,),
               title: Text('Cerrar sesion'),
               onTap: (){
+                socketService.disconnect();
                 Navigator.pushReplacementNamed(context, 'login');
-
                 AuthService.deleteToken();
                 
                 

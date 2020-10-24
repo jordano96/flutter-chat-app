@@ -1,5 +1,6 @@
 import 'package:chat/helpers/mostrar_alerta.dart';
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/socket_service.dart';
 import 'package:chat/widgets/boton_azul.dart';
 import 'package:chat/widgets/labels.dart';
 import 'package:chat/widgets/logo.dart';
@@ -21,6 +22,7 @@ class _RegisterPagePruebaState extends State<RegisterPagePrueba> {
 
  @override
  Widget build(BuildContext context) {
+   final socketService = Provider.of<SocketService>( context );
    
    return Scaffold(
      backgroundColor: Color(0xffF2F2F2),
@@ -35,7 +37,7 @@ class _RegisterPagePruebaState extends State<RegisterPagePrueba> {
               Logo(titulo: 'Registro'),
               Form(
                 key: keyForm,
-                child: formUI(),
+                child: formUI(socketService),
               ),
               Labels(
                   ruta: 'login',
@@ -60,7 +62,7 @@ class _RegisterPagePruebaState extends State<RegisterPagePrueba> {
 
  String gender = 'hombre';
 
- Widget formUI() {
+ Widget formUI(dynamic socketService) {
    final authService = Provider.of<AuthService>( context );
    return  Column(
      children: <Widget>[
@@ -137,7 +139,8 @@ class _RegisterPagePruebaState extends State<RegisterPagePrueba> {
                
 
                if ( registroOk == true ) {
-                
+                 
+                socketService.connect();
                 Navigator.pushReplacementNamed(context, 'usuarios');
                } else {
                  mostrarAlerta(context, 'Registro incorrecto', registroOk );

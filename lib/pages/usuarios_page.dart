@@ -1,6 +1,9 @@
 import 'package:chat/constant/constants.dart';
 import 'package:chat/models/usuario.dart';
 import 'package:chat/services/auth_service.dart';
+import 'package:chat/services/chat_service.dart';
+import 'package:chat/services/socket_service.dart';
+import 'package:chat/services/usuarios_service.dart';
 import 'package:chat/widgets/menu_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,20 +18,17 @@ class UsuariosPage extends StatefulWidget {
 }
 
 class _UsuariosPageState extends State<UsuariosPage> {
+  //String name;
+  final usuariosService=new UsuariosService();
+
   RefreshController _refreshController =RefreshController(initialRefresh: false);
-  void choiceAction(String choice){
-    if(choice == Constants.MapEspecifico){
-      Navigator.pushNamed(context, 'mapsespecifico');
-     
-    }else if(choice == Constants.Ruta){
-      Navigator.pushNamed(context, 'rutas');
-      
-    }else if(choice == Constants.Chat){
-      //Navigator.pushNamed(context, 'maps');
-      Navigator.pushNamed(context, 'chat');
-      
-    }
+  List<Usuario>usuarios=[];
+  @override
+  void initState() {
+    this._cargarUsuarios();
+    super.initState();
   }
+  
   /*Widget llamar(String phone){
     //String phone='0983970901';
     return Ink(
@@ -53,17 +53,12 @@ class _UsuariosPageState extends State<UsuariosPage> {
     ),
     );
   }*/
-  
-  final usuarios=[
-    Usuario(uid: '1',nombre: 'Byron',email: 'byron-jordan@hotmail.com',telefono: '983970901',online: true),
-    Usuario(uid: '2',nombre: 'Kevin',email: 'kevin-agustin@hotmail.com',telefono: '960431698',online: false),
-    Usuario(uid: '3',nombre: 'Monica',email: 'monica-xio@hotmail.com',telefono: '987984275',online: true),
-
-  ];
   @override
   Widget build(BuildContext context) {
     final authService=Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>( context );
     final usuario=authService.usuario;
+    
     return Scaffold(
       drawer: MenuWidget(),
       appBar: AppBar(
@@ -81,7 +76,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
           actions: <Widget>[
             Container(
               margin: EdgeInsets.only(right: 10),
-              child: Icon(Icons.check_circle,color: Colors.blue[400],),
+              child: (socketService.serverStatus==ServerStatus.Online)?Icon(Icons.check_circle,color: Colors.blue[400]):Icon(Icons.offline_bolt,color: Colors.red),
               //child: Icon(Icons.offline_bolt,color: Colors.red)
             )
           ],
@@ -111,6 +106,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
 
   ListTile _usuarioListTile(Usuario usuario) {
     String phone=usuario.telefono;
+    //String name=usuario.nombre;
     return ListTile(
       onTap: ()async{   
     var url = 'tel:+593 $phone';
@@ -127,7 +123,24 @@ class _UsuariosPageState extends State<UsuariosPage> {
           backgroundColor: Colors.blue[100],
         ),
         trailing: PopupMenuButton<String>(
-                onSelected: choiceAction,
+                onSelected: (String choice){
+                  
+    if(choice == Constants.MapEspecifico){
+      Navigator.pushNamed(context, 'mapsespecifico');
+     
+    }else if(choice == Constants.Ruta){
+      Navigator.pushNamed(context, 'rutas');
+      
+    }else if(choice == Constants.Chat){
+      //Navigator.pushNamed(context, 'maps');
+      //Navigator.pushNamed(context, 'chat');
+      //print(name);
+      final chatService=Provider.of<ChatService>(context,listen: false);
+      chatService.usuarioPara=usuario;
+      Navigator.pushNamed(context, 'chat');
+    }
+  
+                },
                 itemBuilder: (BuildContext context){
                   return Constants.choices.map((String choice){
                     return PopupMenuItem<String>(
@@ -160,8 +173,14 @@ class _UsuariosPageState extends State<UsuariosPage> {
       );
   }
   _cargarUsuarios()async{
+    
+    this.usuarios=await usuariosService.getUsuarios();
+    setState(() {
+      
+    });
+
     // monitor network fetch
-    await Future.delayed(Duration(milliseconds: 1000));
+    //await Future.delayed(Duration(milliseconds: 1000));
     // if failed,use refreshFailed()
     _refreshController.refreshCompleted();
   }
